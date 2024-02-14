@@ -6,6 +6,6 @@ pyrogram==2.0.106
 python-dotenv
 Pyromod==1.5
 speedtest-cli
-sqlalchemy==1.3.23
+sqlalchemy==2.0.27
 TgCrypto
 wget
