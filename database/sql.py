@@ -6,46 +6,57 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from config import DB_URI
 
+
 def start() -> scoped_session:
-        engine = create_engine(DB_URL, client_encoding="utf8")
-        BASE.metadata.bind = engine
-        BASE.metadata.create_all(engine)
-        return scoped_session(sessionmaker(bind=engine, autoflush=False))
-        BASE = declarative_base()
-        SESSION = start()
+    engine = create_engine(DB_URI, client_encoding="utf8")
+    BASE.metadata.bind = engine
+    BASE.metadata.create_all(engine)
+    return scoped_session(sessionmaker(bind=engine, autoflush=False))
 
-        INSERTION_LOCK = threading.RLock()
 
-    
+BASE = declarative_base()
+SESSION = start()
+
+INSERTION_LOCK = threading.RLock()
+
+
 class Broadcast(BASE):
-        __tablename__ = "broadcast"
-        id = Column(Numeric, primary_key=True)
-        user_name = Column(TEXT)
+    __tablename__ = "broadcast"
+    id = Column(Numeric, primary_key=True)
+    user_name = Column(TEXT)
 
-def __init__(self, id, user_name):
+    def __init__(self, id, user_name):
         self.id = id
-        self.user_name = user_name        
-
-        Broadcast.__table__.create(checkfirst=True)
+        self.user_name = user_name
 
 
-# Database MongoDB dan SQL
-def add_user(id, user_name):
-        with INSERTION_LOCK:
-            msg = SESSION.query(Broadcast).get(id)
-            if not msg:
-                usr = Broadcast(id, user_name)
-                SESSION.add(usr)
-                SESSION.commit()
+Broadcast.__table__.create(checkfirst=True)
 
-def full_userbase():
-        users = SESSION.query(Broadcast).all()
+
+#  Add user details -
+async def add_user(id, user_name):
+    with INSERTION_LOCK:
+        msg = SESSION.query(Broadcast).get(id)
+        if not msg:
+            usr = Broadcast(id, user_name)
+            SESSION.add(usr)
+            SESSION.commit()
+
+
+async def delete_user(id):
+    with INSERTION_LOCK:
+        SESSION.query(Broadcast).filter(Broadcast.id == id).delete()
+        SESSION.commit()
+
+
+async def full_userbase():
+    users = SESSION.query(Broadcast).all()
+    SESSION.close()
+    return users
+
+
+async def query_msg():
+    try:
+        return SESSION.query(Broadcast.id).order_by(Broadcast.id)
+    finally:
         SESSION.close()
-        return [int(user.id) for user in users]
-
-def del_user(user_id: int):
-        with INSERTION_LOCK:
-            user_to_delete = SESSION.query(Broadcast).filter_by(id=user_id).first()
-            if user_to_delete:
-                SESSION.delete(user_to_delete)
-                SESSION.commit()
