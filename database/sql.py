@@ -14,7 +14,7 @@ def start() -> scoped_session:
         BASE = declarative_base()
         SESSION = start()
 
-    INSERTION_LOCK = threading.RLock()
+        INSERTION_LOCK = threading.RLock()
 
     class Broadcast(BASE):
         __tablename__ = "broadcast"
