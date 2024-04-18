@@ -179,10 +179,10 @@ async def get_users(client: Bot, message: Message):
 
 
 @Bot.on_message(filters.command("broadcast") & filters.user(ADMINS))
-async def send_text(client: Bot, message: Message):
+async def send_text(client: Bot, m: Message):
     if message.reply_to_message:
         query = await query_msg()
-        broadcast_msg = message.reply_to_message
+        broadcast_msg = m.reply_to_message
         total = 0
         successful = 0
         blocked = 0
@@ -211,12 +211,13 @@ async def send_text(client: Bot, message: Message):
                 except BaseException:
                     unsuccessful += 1
                 total += 1
-        status = f"""<b><u>Berhasil Broadcast</u>
-Jumlah Pengguna: <code>{total}</code>
-Berhasil: <code>{successful}</code>
-Gagal: <code>{unsuccessful}</code>
-Pengguna diblokir: <code>{blocked}</code>
-Akun Terhapus: <code>{deleted}</code></b>"""
+        status = f"""**Berhasil Mengirim pesan ke:
+
+Berhasil: {successful}
+Gagal: {unsuccessful}
+Pengguna Diblokir: {blocked}
+Akun Dihapus: {deleted}
+Total Pengguna: {total}**"""
         return await pls_wait.edit(status)
     else:
         msg = await message.reply(
