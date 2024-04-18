@@ -179,10 +179,10 @@ async def get_users(client: Bot, message: Message):
 
 
 @Bot.on_message(filters.command("broadcast") & filters.user(ADMINS))
-async def send_text(client: Bot, m: Message):
+async def send_text(client: Bot, message: Message):
     if message.reply_to_message:
         query = await query_msg()
-        broadcast_msg = m.reply_to_message
+        broadcast_msg = message.reply_to_message
         total = 0
         successful = 0
         blocked = 0
