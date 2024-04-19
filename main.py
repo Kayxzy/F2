@@ -12,11 +12,11 @@ async def auto_restart():
         def _():
             os.system(f"kill -9 {os.getpid()} && python3 -m main.py")
         register(_)
-        except Exception as a:
-            self.LOGGER(__name__).warning(a)
-            self.LOGGER(__name__).info(
-                "BOT BERHASIL DI RESTART"
+    except Exception as a:
+        self.LOGGER(__name__).warning(a)
+        self.LOGGER(__name__).info(
+            "BOT BERHASIL DI RESTART"
             )
-            sys.exit()
+        sys.exit()
 
 Bot().run()
