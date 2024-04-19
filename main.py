@@ -5,6 +5,7 @@ import os
 import sys
 
 from atexit import register
+from config import LOGGER
 
 async def auto_restart():
     while not await asyncio.sleep(2000):
