@@ -252,3 +252,16 @@ async def get_uptime(client, m: Message):
         f"• <b>Uptime:</b> <code>{uptime}</code>\n"
         f"• <b>Start Time:</b> <code>{START_TIME_ISO}</code>"
     )
+
+
+@Bot.on_message(filters.command("restart") & filters.user(ADMINS))
+async def restart_bot(c, m):
+    try:
+        update_message = await m.reply_text("🔄 Sedang memulai ulang bot....")
+        await asyncio.sleep(1)
+        await update_message.delete()
+        await restart()
+        return await m.send_message("**✅ BOT BERHASIL DI MULAI ULANG.**")
+    except Exception as e:
+        await m.reply_text("⛔ Terjadi kesalahan saat memulai ulang bot.")
+        await m.reply_text(str(e))
