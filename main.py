@@ -7,7 +7,7 @@ import sys
 from atexit import register
 
 async def auto_restart():
-    while not await asyncio.sleep(43200):
+    while not await asyncio.sleep(5):
         def _():
             os.system(f"kill -9 {os.getpid()} && python3 -m main.py")
         register(_)
